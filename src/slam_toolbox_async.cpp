@@ -35,6 +35,7 @@ void AsynchronousSlamToolbox::laserCallback(
   sensor_msgs::msg::LaserScan::ConstSharedPtr scan)
 /*****************************************************************************/
 {
+  const auto start = std::chrono::high_resolution_clock::now();
   // store scan header
   scan_header = scan->header;
   // no odom info
@@ -57,6 +58,12 @@ void AsynchronousSlamToolbox::laserCallback(
   if (shouldProcessScan(scan, pose)) {
     addScan(laser, scan, pose);
   }
+
+  const auto stop = std::chrono::high_resolution_clock::now();
+  const std::chrono::duration<double> diff = stop - start;
+  std::ofstream outfile("timing2_2", std::ofstream::app);
+  outfile << diff.count() << std::endl;
+  outfile.close();
 }
 
 /*****************************************************************************/
